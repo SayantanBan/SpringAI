@@ -23,12 +23,25 @@ public class MultiModelChatController {
 
     @GetMapping("/openai/chat")
     public String openAiChat(@RequestParam("message") String message){
-        return openAIChatClient.prompt(message).call().content();
+//        return openAIChatClient.prompt(message).call().content();
+        return openAIChatClient.prompt().system("""
+                        You are an internal IT helpdesk assistant. Your role is to assist\s
+                        employees with IT-related issues such as resetting passwords,\s
+                        unlocking accounts, and answering questions related to IT policies.
+                        If a user requests help with anything outside of these\s
+                        responsibilities, respond politely and inform them that you are\s
+                        only able to assist with IT support tasks within your defined scope.
+                       \s""").user(message).call().content();
+
     }
 
     @GetMapping("/ollama/chat")
     public String ollamaChat(@RequestParam("message") String message) {
-        return ollamaChatClient.prompt(message).call().content();
+        return ollamaChatClient
+                .prompt()
+                .user(message)
+                .call()
+                .content();
     }
 
 }
