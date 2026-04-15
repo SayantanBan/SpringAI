@@ -1,5 +1,6 @@
 package com.sayantan.mcpserver.controller;
 
+import com.sayantan.mcpserver.advisor.TokenUsageAuditAdvisor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,6 +22,11 @@ public class ChatController {
 
     @GetMapping("/chat")
     public String chat(@RequestParam("message") String message) {
-        return chatClient.prompt(message).call().content();
+        return chatClient
+                .prompt()
+                .advisors(new TokenUsageAuditAdvisor())
+                .user(message)
+                .call()
+                .content();
     }
 }

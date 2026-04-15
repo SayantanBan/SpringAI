@@ -1,5 +1,6 @@
 package com.sayantan.mcpserver.controller;
 
+import com.sayantan.mcpserver.advisor.TokenUsageAuditAdvisor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +19,7 @@ public class PromptTemplateController {
     @Value("classpath:/promptTemplates/userPromptTemplate.st")
     Resource userPromptTemplate;
 
-    public PromptTemplateController(@Qualifier("openAiChatClient") ChatClient chatClient) {
+    public PromptTemplateController(@Qualifier("ollamaChatClient") ChatClient chatClient) {
         this.chatClient = chatClient;
     }
 
@@ -26,6 +27,7 @@ public class PromptTemplateController {
     public String emailResponse(@RequestParam("customerName") String customerName, @RequestParam("customerMessage") String customerMessage) {
         return chatClient
                 .prompt()
+                .advisors(new TokenUsageAuditAdvisor())
                 .system("""
                         You are a professional customer service assistant which helps drafting email
                         responses to improve the productivity of the customer support team
