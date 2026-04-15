@@ -10,30 +10,29 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/api")
-public class PromptStuffingController {
+public class StreamController {
 
     private final ChatClient chatClient;
 
     @Value("classpath:/promptTemplates/systemPromptTemplate.st")
     Resource systemPromptTemplate;
 
-    public PromptStuffingController(@Qualifier("openAiChatClient") ChatClient chatClient) {
+    public StreamController(@Qualifier("openAiChatClient") ChatClient chatClient) {
         this.chatClient = chatClient;
     }
 
-    @GetMapping("/prompt-stuffing")
-    public String emailResponse(@RequestParam("message") String message) {
+    @GetMapping("/stream")
+    public Flux<String> stream(@RequestParam("message") String message) {
         return chatClient
                 .prompt()
-                .options(OpenAiChatOptions.builder().model(OpenAiApi.ChatModel.GPT_4_O).build())
                 .system(systemPromptTemplate)
                 .user(message)
-                .call()
+                .stream()
                 .content();
-//                .chatClientResponse().toString();
     }
 
 
