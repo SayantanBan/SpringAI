@@ -23,8 +23,8 @@ spring:
           model: llama3.2:1b
 strava:
   # Using the secret from your properties (Ensure this is in SSM for Prod)
-  client-secret: 64c57c59a796ab69a0a677a0f761f009a141e21f
-  client-id: 227094
+  client-secret: ${CLIENT_SECRET}
+  client-id: ${CLIENT_ID}
   redirect-uri: http://localhost:8080/auth/callback
   scope: activity:read_all,profile:read_all
 
