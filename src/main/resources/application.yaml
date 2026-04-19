@@ -25,7 +25,7 @@ strava:
   # Using the secret from your properties (Ensure this is in SSM for Prod)
   client-secret: ${CLIENT_SECRET}
   client-id: ${CLIENT_ID}
-  redirect-uri: http://localhost:8080/auth/callback
+  redirect-uri: https://strava-connect-d2cp.onrender.com/auth/callback
   scope: activity:read_all,profile:read_all
 
 logging:
