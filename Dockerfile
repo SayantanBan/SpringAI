@@ -1,24 +1,30 @@
 # Stage 1: Build stage
-FROM maven:3.9.9-eclipse-temurin-25-alpine AS build
+# We use a standard Maven image to "borrow" the Maven binaries,
+# but run the build on a JDK 25 Alpine base.
+FROM maven:3.9.9-eclipse-temurin-21-alpine AS maven_binaries
+FROM eclipse-temurin:25-jdk-alpine AS build
 WORKDIR /app
 
-# Copy the pom.xml and source code
+# Copy Maven from the official image to our JDK 25 environment
+COPY --from=maven_binaries /usr/share/maven /usr/share/maven
+COPY --from=maven_binaries /usr/local/bin/mvn-entrypoint.sh /usr/local/bin/mvn-entrypoint.sh
+RUN ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+
+# Copy your project files
 COPY pom.xml .
 COPY src ./src
 
-# Build the application
-# We use -DfinalName to ensure the JAR is named exactly what you want
+# Build the application with Java 25 preview features
 RUN mvn clean package -DskipTests -DfinalName=strava-connect
 
 # Stage 2: Runtime stage
 FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 
-# Copy the specific jar name from the build stage
+# Copy the generated jar
 COPY --from=build /app/target/strava-connect.jar strava-connect.jar
 
-# Expose the port (matches your application.yml)
 EXPOSE 8080
 
-# Run with --enable-preview as required by your Maven config
+# Essential: Keep --enable-preview for Java 25/Spring AI 2.0.0
 ENTRYPOINT ["java", "--enable-preview", "-jar", "strava-connect.jar"]
