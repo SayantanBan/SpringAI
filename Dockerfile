@@ -21,10 +21,11 @@ RUN mvn clean package -DskipTests -DfinalName=strava-connect
 FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 
-# Copy the generated jar
-COPY --from=build /app/target/strava-connect.jar strava-connect.jar
+# Use a wildcard to find the jar in the target folder
+# and rename it to strava-connect.jar in the new image
+COPY --from=build /app/target/*.jar strava-connect.jar
 
 EXPOSE 8080
 
-# Essential: Keep --enable-preview for Java 25/Spring AI 2.0.0
+# Essential: Keep --enable-preview for Java 25
 ENTRYPOINT ["java", "--enable-preview", "-jar", "strava-connect.jar"]
