@@ -12,7 +12,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +24,7 @@ public class StravaAuthService {
     @Value("${strava.client-id}") private String clientId;
     @Value("${strava.client-secret}") private String clientSecret;
 
-    private static final String REDIRECT_URI = "http://localhost:8080/callback";
+    private static final String REDIRECT_URI = "https://strava-connect-d2cp.onrender.com/callback";
     private static final Path TOKEN_PATH = Paths.get(
             System.getProperty("user.home"), ".mcp-strava", "token.json"
     );
@@ -60,7 +59,7 @@ public class StravaAuthService {
         if (!Files.exists(TOKEN_PATH)) {
             throw new NotAuthenticatedException(
                     "Not authenticated with Strava. Please visit: " +
-                            "http://localhost:8080/auth/strava — authorize the app, then try again."
+                            "https://strava-connect-d2cp.onrender.com/auth/strava — authorize the app, then try again."
             );
         }
 
@@ -82,7 +81,7 @@ public class StravaAuthService {
             try { Files.deleteIfExists(TOKEN_PATH); } catch (IOException ignored) {}
             throw new NotAuthenticatedException(
                     "Strava token is invalid or corrupted. Please re-authenticate at: " +
-                            "http://localhost:8080/auth/strava"
+                            "https://strava-connect-d2cp.onrender.com/auth/strava"
             );
         }
     }
