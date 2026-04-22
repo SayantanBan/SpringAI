@@ -1,6 +1,19 @@
 spring:
   application:
     name: mcpserver
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: admin
+
+  jpa:
+     hibernate:
+       ddl-auto: update   # or validate / none (based on your use case)
+     properties:
+       hibernate:
+         dialect: org.hibernate.dialect.PostgreSQLDialect
+
   ai:
     mcp:
       server:
@@ -13,6 +26,11 @@ spring:
     chat:
       client:
         enabled: false
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: always
+            schema: classpath:/schema/schema-postgresql.sql
     openai:
       api-key: ${OPENAI_API_KEY}
     #    model:
