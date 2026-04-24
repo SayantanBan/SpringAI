@@ -6,7 +6,10 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: admin
-
+    docker:
+      compose:
+         stop:
+          command: down
   jpa:
      hibernate:
        ddl-auto: update   # or validate / none (based on your use case)
@@ -15,6 +18,12 @@ spring:
          dialect: org.hibernate.dialect.PostgreSQLDialect
 
   ai:
+    vectorstore:
+      qdrant:
+        initialize-schema: true
+        host: localhost
+        port: 6334
+        collection-name: rag-demo
     mcp:
       server:
         name: strava-local-mcp
@@ -33,6 +42,8 @@ spring:
             schema: classpath:/schema/schema-postgresql.sql
     openai:
       api-key: ${OPENAI_API_KEY}
+#      embedding:
+#        enabled: false
     #    model:
     #      chat: ollama
     ollama:
