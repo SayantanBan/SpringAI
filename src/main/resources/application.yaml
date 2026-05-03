@@ -19,6 +19,8 @@ spring:
 
   ai:
     vectorstore:
+      observations:
+        enabled: true
       qdrant:
         initialize-schema: true
         host: localhost
@@ -34,7 +36,10 @@ spring:
     # To Stop auto configure chatclient.builder
     chat:
       client:
-        enabled: false
+        observations:
+          enabled: false
+          log-prompt: true
+          log-completion: true
       memory:
         repository:
           jdbc:
@@ -57,6 +62,26 @@ strava:
   redirect-uri: https://strava-connect-d2cp.onrender.com/auth/callback
   scope: activity:read_all,profile:read_all
 
+opentelemetry.exporter.otlp.endpoint: http://localhost:4317
+
+management:
+  opentelemetry:
+    exporter.otlp.endpoint: http://localhost:4317
+    resource-attributes:
+      service.name: mcpserver
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus,otlp
+  tracing:
+    sampling:
+      probability: 1
+    propagation:
+      type: b3, w3c
+  otlp:
+    tracing:
+      endpoint: http://localhost:4317
+      transport: grpc
 logging:
   level:
     org:
@@ -67,3 +92,4 @@ logging:
               advisor: DEBUG
   pattern:
     console: "%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n"
+

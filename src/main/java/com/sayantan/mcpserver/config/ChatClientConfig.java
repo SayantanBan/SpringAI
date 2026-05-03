@@ -14,7 +14,8 @@ public class ChatClientConfig {
     @Bean
     public ChatClient openAiChatClient(OpenAiChatModel openAiChatModel) {
 //        return ChatClient.create(openAiChatModel);
-        ChatOptions chatOptions = ChatOptions.builder().model("gpt-4.1-mini")
+        ChatOptions chatOptions = ChatOptions.builder()
+                .model("gpt-4.1-mini")
                 .maxTokens(1000)
                 .temperature(0.8)
                 .build();
